@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gasto semanal</title>
+</head>
+
+<body>
+    <h1 class="titulo">Gasto semanal</h1>
+    <div class="contenedor">
+        <div class="left">
+            <p class="titulo2">Añade tus gastos aqui</p>
+            <p class="texto1">gasto</p>
+            <input id="nombre_gasto" type="text" class="mini" placeholder="nombre Gasto" />
+            <p class="texto3">cantidad</p>
+            <input id="cantidad_gasto" type="text" class="mini" placeholder="cantidad en $" />
+            <button id="agregar" class="btnagg" onclick="validar()" type="submit" value="agregar">
+                <p id="pe" class="texto4">agregar</p>
+            </button>
+        </div>
+        <div class="right">
+            <p class="titulo2">Listado</p>
+            <div class="cuadro1">
+                <table>
+                    <thead>
+                        <tr>
+                            <td id="uno">nombre</td>
+                            <td id="dos">cantidad</td>
+                        </tr>
+                    </thead>
+                    <tbody id="list"></tbody>
+                </table>
+                <input type="submit" value="borrar" class="btnrojo" id="borrar" />
+            </div>
+            <div class="cuadro2">
+                <p id="Presupuesto">Presupuesto</p>
+            </div>
+
+            <div id="cuadro3" class="cuadro3">
+                <p id="restante">restante</p>
+            </div>
+
+
+        </div>
+    </div>
+</body>
+<style>
+    * {
+        margin: 0%;
+    }
+
+    body {
+        display: flex;
+        background-image: url(https://r4.wallpaperflare.com/wallpaper/658/350/471/material-blue-material-design-minimal-art-wallpaper-890038dd017acd9bb69748ef9091a67d.jpg);
+        background-size: cover;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .titulo {
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size:50px;
+        color: white;
+
+    }
+
+    .contenedor {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background-color: #003554;
+        width: 60%;
+        border-radius: 10px;
+        border: 4px solid #669bbc;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .titulo2 {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+        font-size: x-large;
+        margin-bottom: 4%;
+        align-self: center;
+        padding: 30px;
+        color: #c6cace;
+    }
+
+    .texto1 {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+        font-size: large;
+        margin-left: 10%;
+        margin-bottom: 2%;
+        color: #c6cace;
+    }
+
+    .texto2 {
+        padding: 7px;
+        color:#c6cace;
+    }
+
+    .texto3 {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+        font-size: large;
+        color: #c6cace;
+        margin-left: 10%;
+        margin-top: 3%;
+        margin-bottom: 2%;
+    }
+
+    .texto4 {
+        padding: 10px;
+    }
+
+    .mini {
+        border: 1px solid black;
+        margin-left: 10%;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #a2c6dc;
+        border: 4px solid  white;
+    }
+
+    .btnagg {
+        display: flex;
+        width: 80px;
+        justify-content: center;
+        margin-left: 10%;
+        margin-top: 2%;
+        background-color: #087ae5;
+        border: 0px;
+        border-radius: 4px;
+        margin-bottom: 10%;
+    }
+
+    .right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cuadro1 {
+        display: flex;
+        border: 2px solid #f1faee;
+        background-color: #669bbc;
+        width: 80%;
+        margin-left: 10%;
+        padding: 10px;
+        border-radius: 4px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5%;
+    }
+
+    .gasto {
+        color: white;
+        display: flex;
+        border-radius: 10px;
+        background-color: #087ae5;
+        height: 20px;
+        width: 60px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btnrojo {
+        padding: 10px;
+        background-color: #db3445;
+        border-radius: 4px;
+        color: white;
+    }
+
+    .cuadro2 {
+        display: flex;
+        border: 1px solid black;
+        margin-left: 10%;
+        border-radius: 4px;
+        padding: 10px;
+        width: 80%;
+        margin-bottom: 3%;
+        background-color: #cbe5fe;
+    }
+
+    .cuadro3 {
+        display: flex;
+        border: 1px solid black;
+        margin-left: 10%;
+        border-radius: 4px;
+        padding: 10px;
+        width: 80%;
+        margin-bottom: 3%;
+        background-color: #d4edda;
+    }
+    .swal2-popup{
+        background-color:#003554;
+        color: #c6cace;
+        border: 3px solid #669bbc;
+    }
+
+    .swal2-input{
+        background-color: #669bbc;
+        border: 2px solid  #0d1b2a
+    }
+    .swal2-actions{
+        background-color: #669bbc;
+        border-radius: 5px;
+    }
+
+    div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
+    border: 0;
+    border-radius: .25em;
+    background: initial;
+    background-color:#0d1b2a;
+    color: #fff;
+    font-size: 1em;
+}
+div:where(.swal2-container) h2:where(.swal2-title) {
+   color:#c6cace;
+   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+div:where(.swal2-container) label:where(.swal2-input-label) {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #c6cace;
+}
+
+</style>
+<script>
+
+
+    let informacion = [];
+    let bd = false;
+    let id = null;
+    let id2 = null;
+    presupuesto1 = null
+    let presupuesto2 = null
+    let restante1 = null
+    let viejoMonto = null
+
+    function formatoMoneda(valor) {
+        return valor.toLocaleString('es-CO', {
+            style: 'currency',
+            currency: 'COP'
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        solicitarMonto()
+    })
+  async function solicitarMonto() {
+        let montoValido = false;
+        while (!montoValido) {
+            const { value: monto } = await Swal.fire({
+                title: "Cantidad de su monto semanal",
+                input: "text",
+                inputLabel: "Monto",
+                inputPlaceholder: "Introduzca el monto",
+                didOpen: () => {
+                    const input = Swal.getInput();
+                    input.setAttribute("id", "disponible");
+                }
+            });
+
+            const presupuesto = parseFloat(monto);
+
+            if (presupuesto <= 0 || isNaN(presupuesto)) {
+                await Swal.fire("Por favor, ingrese un monto positivo y válido.");
+            } else {
+                montoValido = true;
+                document.getElementById("Presupuesto").textContent = "presupuesto: $" + formatoMoneda(presupuesto);
+                document.getElementById("restante").textContent = "restante: $" + formatoMoneda(presupuesto);
+                presupuesto1 = presupuesto;
+                presupuesto2 = presupuesto;
+                restante1 = presupuesto;
+            }
+        }
+    }
+
+
+    function enviar() {
+
+        if (bd === true) {
+            let nuevoMonto = parseFloat(document.getElementById("cantidad_gasto").value);
+            let diferencia = nuevoMonto - viejoMonto;
+
+            if (diferencia > restante1) {
+                Swal.fire("El nuevo monto sobrepasa el restante disponible.");
+                return;
+            }
+
+            informacion[id].nombre_gasto = document.getElementById("nombre_gasto").value
+            informacion[id].cantidad_gasto = document.getElementById("cantidad_gasto").value
+            bd = false;
+        }
+        else {
+            let datos = {}
+            datos = {
+                nombre_gasto: document.getElementById("nombre_gasto").value,
+                cantidad_gasto: document.getElementById("cantidad_gasto").value
+            }
+            informacion.push(datos);
+        }
+        
+        document.getElementById("nombre_gasto").value = ""
+        document.getElementById("cantidad_gasto").value = ""
+        document.getElementById("agregar").disabled = false
+        lista()
+        calcularRestante()
+        desactivarboton()
+    }
+
+    function lista() {
+        let lista2 = document.getElementById("list");
+        lista2.textContent = "";
+        informacion.forEach((e, i) => {
+            let tr = document.createElement("tr");
+
+            let td = document.createElement("td");
+            td.textContent = e.nombre_gasto;
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.textContent = formatoMoneda(e.cantidad_gasto);
+            tr.appendChild(td);
+
+            let Eliminar = document.createElement("button");
+            Eliminar.textContent = "❎";
+            Eliminar.style.backgroundColor = "black";
+            Eliminar.addEventListener("click", () => {
+                informacion.splice(i, 1)
+                document.getElementById("list").textContent = ""
+                document.getElementById("agregar").disabled = false
+                lista()
+                calcularRestante()
+            })
+
+
+            td = document.createElement("td")
+            
+            let editar = document.createElement("button")
+            editar.textContent = "✍🏼"
+            editar.addEventListener("click", () => {
+                id = i
+                document.getElementById("nombre_gasto").value = e.nombre_gasto
+                document.getElementById("cantidad_gasto").value = e.cantidad_gasto
+                bd = true
+                viejoMonto = parseFloat(e.cantidad_gasto)
+                document.getElementById("agregar").disabled =false
+                document.getElementById("cuadro3").style.backgroundColor = "#cbe5fe"
+                document.getElementById("list").textContent = ""
+                lista()
+                calcularRestante()
+            })
+
+
+            td.appendChild(Eliminar)
+            td.appendChild(editar)
+            tr.appendChild(td)
+            document.getElementById("list").appendChild(tr)
+        })
+
+
+        document.getElementById("borrar").addEventListener("click", () => {
+            document.getElementById("list").textContent = "";
+            informacion = [];
+            restablecerPresupuestodespuesdeborrar();
+            document.getElementById("cuadro3").style.backgroundColor = "#d4edda"
+            document.getElementById("restante").textContent = "restante: " + formatoMoneda(presupuesto2);
+            document.getElementById("agregar").disabled = false
+            document.getElementById("nombre_gasto").value = ""
+            document.getElementById("cantidad_gasto").value = ""
+        })
+    }
+
+    function restablecerPresupuestodespuesdeborrar() {
+    restante1 = presupuesto2; 
+    
+    }
+
+    function validar() {
+        let cantidadGasto = parseFloat(document.getElementById("cantidad_gasto").value);
+
+        if (document.getElementById("nombre_gasto").value === "" || cantidadGasto <= 0 || isNaN(cantidadGasto)) {
+            Swal.fire("Por favor, rellene todos los campos correctamente.");
+        }
+        else if (cantidadGasto > presupuesto2) {
+            Swal.fire("El monto no puede ser mayor al presupuesto inicial.");
+        }
+        else if (!bd && cantidadGasto > restante1) {
+            Swal.fire("El monto sobrepasa el restante disponible.");
+        }
+        else {
+            enviar();
+            alerta()
+        }
+    }
+
+
+
+    function alerta(){
+        if (restante1 === 0) {
+            Swal.fire({
+                title: "¡aviso!",
+                text: "su presupuesto se ha agotado",
+                imageUrl: "https://i.pinimg.com/564x/fe/fc/5c/fefc5c3c92154f9e1c00ff41b0c81380.jpg",
+                imageWidth: 400,
+                imageHeight: 200,
+                imageAlt: "Custom image"
+            })
+    }
+    }
+    function calcularRestante() {
+        let totalGastado = informacion.reduce((sum, gasto) => sum + parseFloat(gasto.cantidad_gasto), 0);
+        restante1 = presupuesto2 - totalGastado;
+        document.getElementById("restante").textContent = "restante: $" + formatoMoneda(restante1);
+        color();
+        
+    }
+
+    function color() {
+
+        let porcentaje20 = presupuesto2 * 0.2
+        let porcentaje10 = presupuesto2 * 0.1
+        if (restante1 <= porcentaje20 && restante1 > porcentaje10) {
+            document.getElementById("cuadro3").style.backgroundColor = "orange"
+        }
+        else if (restante1 <= porcentaje10) {
+            document.getElementById("cuadro3").style.backgroundColor = "red"
+        }
+        else{
+            document.getElementById("cuadro3").style.backgroundColor = "#d4edda"
+        }
+
+    }
+
+    function desactivarboton() {
+
+        if (restante1 <= 0) {
+            document.getElementById("agregar").disabled = true;
+        } else {
+            document.getElementById("agregar").disabled = false;
+        }
+    }
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</html>

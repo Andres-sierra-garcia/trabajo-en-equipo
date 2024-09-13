@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<div class="titulo">
+    <h1>Pet Paradise</h1>
+</div>
+<div class="contenedor1">
+    <div class="A">
+
+        <!-- Button trigger modal -->
+        <button type="button" class="boton" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <p class="texto00">Agendar cita</p>
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <p class="texto2">Nombre mascota</p>
+                        <input id="nombre_mascota" type="text">
+                        <p class="texto2">Propietario</p>
+                        <input id="propietario" type="text">
+                        <p class="texto2">Telefono</p>
+                        <input id="telefono" type="text">
+                        <p class="texto2">Tipo se mascota</p>
+                        <select name="tipos de mascotas" id="tipo_mascota" required>
+                            <option value="seleccionar" disabled selected>seleccionar</option>
+                            <option value="perro">perro</option>
+                            <option value="gato">gato</option>
+                            <option value="conejo">conejo</option>
+                            <option value="tortuga">tortuga</option>
+                            <option value="leon">leon</option>
+                        </select>
+                        <p class="texto2">Fecha</p>
+                        <input id="fecha" type="date">
+                        <p class="texto2">Hora</p>
+                        <input id="hora" type="time">
+                        <p class="texto2">Sintomas</p>
+                        <textarea class="sintomas" id="sintomas"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="cerrar" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Cerrar</button>
+                        <button onclick="validar()" type="button" class="btn btn-primary">guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="box">
+                <span class="organizar">Organizar por</span>
+                <div>
+                    <div class="container">
+                        <form id="filterForm">
+                            <label>
+                                <input type="radio" name="radio" value="abierta">
+                                <span>
+                                    <p class="jh">Abierta</p>
+                                </span>
+                            </label>
+                            <label>
+                                <input type="radio" name="radio" value="terminada">
+                                <span>
+                                    <p class="jh">Terminada</p>
+                                </span>
+                            </label>
+                            <label>
+                                <input type="radio" name="radio" value="anulada">
+                                <span>
+                                    <p class="jh">Anulada</p>
+                                </span>
+                            </label>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div id="B" class="B"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    let informacion = []
+    let bd = false
+    let ide = null
+    const imagenes = {
+        perro: "https://i.pinimg.com/236x/5c/a2/05/5ca205dde86e7e990fbff99b3dc8ab4b.jpg",
+        gato: "https://i.pinimg.com/236x/b9/78/ad/b978ad81b2c30b971adfb67060cda471.jpg",
+        conejo: "https://i.pinimg.com/236x/56/ea/08/56ea0873a72aa2906acc04d2eada7e73.jpg",
+        tortuga: "https://i.pinimg.com/236x/29/34/70/2934700999f27eb225459f384f0517eb.jpg",
+        leon: "https://i.pinimg.com/236x/bd/26/62/bd26625492bbb9b12360267bcbdd36ad.jpg"
+    };
+
+    function envio() {
+        if (bd === true) {
+            informacion[ide].nombre = document.getElementById("nombre_mascota").value
+            informacion[ide].propietario = document.getElementById("propietario").value
+            informacion[ide].telefono = document.getElementById("telefono").value
+            informacion[ide].tipo_mascota = document.getElementById("tipo_mascota").value
+            informacion[ide].fecha = document.getElementById("fecha").value
+            informacion[ide].hora = document.getElementById("hora").value
+            informacion[ide].sintomas = document.getElementById("sintomas").value
+            document.getElementById("B").textContent = ""
+            lista()
+
+            bd = false
+        }
+        else {
+            let datos = {}
+            datos = {
+                nombre: document.getElementById("nombre_mascota").value,
+                propietario: document.getElementById("propietario").value,
+                telefono: document.getElementById("telefono").value,
+                tipo_mascota: document.getElementById("tipo_mascota").value,
+                fecha: document.getElementById("fecha").value,
+                hora: document.getElementById("hora").value,
+                sintomas: document.getElementById("sintomas").value,
+                estado: "abierta" // Estado por defecto
+            }
+            informacion.push(datos)
+
+            lista()
+
+        }
+    }
+
+    function validar() {
+        let fechaingresada = new Date(document.getElementById("fecha").value);
+        let fechaactual = new Date();
+        const horamin = 8;
+        const horamax = 19;
+        let horaingresada = parseFloat(document.getElementById("hora").value);
+
+
+
+        if (document.getElementById("nombre_mascota").value === "") {
+            Swal.fire({
+                title: "¡Importante!",
+                text: "por favor digita el nombre de la mascota",
+                imageUrl: "https://i.pinimg.com/originals/11/70/27/117027902eb96dbf73c1ff64c44c5f8b.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else if (document.getElementById("propietario").value === "") {
+
+            Swal.fire({
+                title: "¡Importante!",
+                text: "por favor digite su nombre completo",
+                imageUrl: "https://i.pinimg.com/originals/f3/2f/05/f32f058dd640624ea8a65053ac410b52.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else if (document.getElementById("telefono").value === "") {
+            Swal.fire({
+                title: "¡Por favor digite su numero completo!",
+                text: "-puede que haya digitado letras por error 😊",
+                imageUrl: "https://i.pinimg.com/originals/6d/0b/35/6d0b35aaa3378482e946550c5ed30586.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else if (document.getElementById("tipo_mascota").value === "seleccionar") {
+            Swal.fire({
+                title: "!mascota!",
+                text: "-por favor seleccione el tipo de mascota 😊",
+                imageUrl: "https://i.pinimg.com/originals/6f/6f/5a/6f6f5acc744beedb26c5692b3e36621a.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else if (fechaingresada < fechaactual) {
+            Swal.fire({
+                title: "Fecha",
+                text: "la fecha no puede ser inferior a la fecha actual 😊",
+                imageUrl: "https://i.pinimg.com/originals/6f/6f/5a/6f6f5acc744beedb26c5692b3e36621a.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+            return false;
+        }
+        else if (document.getElementById("fecha").value === "") {
+            Swal.fire({
+                title: "fecha",
+                text: "elija una fecha 😊",
+                imageUrl: "https://i.pinimg.com/originals/6f/6f/5a/6f6f5acc744beedb26c5692b3e36621a.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+            return false;
+        }
+        else if (horaingresada < horamin || horaingresada > horamax) {
+            Swal.fire({
+                title: "Hora",
+                text: "la hora no puede ser inferior a las 8 o superior a las 19 😊",
+                imageUrl: "https://i.pinimg.com/originals/6f/6f/5a/6f6f5acc744beedb26c5692b3e36621a.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else if (document.getElementById("hora").value === "") {
+            Swal.fire({
+                title: "Hora",
+                text: "elija una hora 😊",
+                imageUrl: "https://i.pinimg.com/originals/6f/6f/5a/6f6f5acc744beedb26c5692b3e36621a.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else if (document.getElementById("sintomas").value === "") {
+            Swal.fire({
+                title: "sintomas",
+                text: "por favor escriba los sintomas 😊",
+                imageUrl: "https://i.pinimg.com/originals/6f/6f/5a/6f6f5acc744beedb26c5692b3e36621a.gif",
+                imageWidth: 400,
+                heightAuto: false,
+                imageAlt: "Custom image"
+            });
+        }
+        else {
+            document.querySelector("body").style.height="null"
+            envio()
+        }
+    }
+
+
+    function lista() {
+        document.getElementById("B").innerHTML = "";
+
+        informacion.forEach((e, i) => {
+            let divs = document.createElement("div");
+            divs.className = "tarjeta";
+
+            let imagen = document.createElement("img");
+            imagen.src = imagenes[e.tipo_mascota];
+            imagen.className = "imagen";
+            divs.appendChild(imagen);
+
+            let nombre_mascota = document.createElement("p");
+            nombre_mascota.textContent = "Nombre: " + e.nombre;
+            nombre_mascota.id = "nombre_mascotap";
+
+            let propietario = document.createElement("p");
+            propietario.textContent = "Propietario: " + e.propietario;
+            propietario.id = "propietariop";
+
+            let telefono = document.createElement("p");
+            telefono.textContent = "Teléfono: " + e.telefono;
+            telefono.id = "telefonop";
+
+            let tipo_mascota = document.createElement("p");
+            tipo_mascota.textContent = "Tipo de mascota: " + e.tipo_mascota;
+            tipo_mascota.id = "tipo_mascotap";
+
+            let fecha = document.createElement("p");
+            fecha.textContent = "Fecha: " + e.fecha;
+            fecha.id = "fechap";
+
+            let hora = document.createElement("p");
+            hora.textContent = "Hora: " + e.hora;
+            hora.id = "horap";
+
+            let sintomas = document.createElement("p");
+            sintomas.textContent = "Síntomas: " + e.sintomas;
+            sintomas.id = "sintomas";
+
+            let estadoSelect = document.createElement("select");
+            estadoSelect.id = "estado_" + i;
+            estadoSelect.className = "estado";
+            estadoSelect.innerHTML = `
+                    <option value="abierta" ${e.estado === 'abierta' ? 'selected' : ''}>Abierta</option>
+                    <option value="terminada" ${e.estado === 'terminada' ? 'selected' : ''}>Terminada</option>
+                    <option value="anulada" ${e.estado === 'anulada' ? 'selected' : ''}>Anulada</option>
+                `;
+            estadoSelect.addEventListener('change', function () {
+                informacion[i].estado = this.value;
+            });
+            let eliminarBtn = document.createElement("button");
+            eliminarBtn.textContent = "Eliminar";
+            eliminarBtn.className = "eliminar";
+            eliminarBtn.addEventListener("click", () => eliminarCita(i));
+
+            divs.append(nombre_mascota, propietario, telefono, tipo_mascota, fecha, hora, sintomas, estadoSelect, eliminarBtn);
+
+            let editar = document.createElement("input");
+            editar.type = "submit";
+            editar.value = "Editar";
+            editar.className = "editar";
+            editar.addEventListener("click", () => {
+                ide = i
+                document.getElementById("nombre_mascota").value = e.nombre;
+                document.getElementById("propietario").value = e.propietario;
+                document.getElementById("telefono").value = e.telefono;
+                document.getElementById("tipo_mascota").value = e.tipo_mascota;
+                document.getElementById("fecha").value = e.fecha;
+                document.getElementById("hora").value = e.hora;
+                document.getElementById("sintomas").value = e.sintomas;
+                bd = true
+                new bootstrap.Modal(document.getElementById('exampleModal')).show()
+            })
+            divs.appendChild(editar);
+            Limpiar();
+            document.getElementById("B").appendChild(divs);
+
+        });
+    }
+
+    function Limpiar() {
+        document.getElementById("nombre_mascota").value = "";
+        document.getElementById("propietario").value = "";
+        document.getElementById("telefono").value = "";
+        document.getElementById("tipo_mascota").value = "";
+        document.getElementById("fecha").value = "";
+        document.getElementById("hora").value = "";
+        document.getElementById("sintomas").value = "";
+    }
+
+
+    function eliminarCita(index) {
+        informacion.splice(index, 1);
+        lista();
+    }
+    document.getElementById('filterForm').addEventListener('change', function (e) {
+        const filterValue = e.target.value;
+        filtrarCitas(filterValue);
+    });
+
+    function filtrarCitas(estado) {
+        const filtered = informacion.filter(cita => cita.estado === estado);
+        document.getElementById("B").innerHTML = "";
+
+        filtered.forEach((e, i) => {
+            let divs = document.createElement("div");
+            divs.className = "tarjeta";
+
+            let imagen = document.createElement("img");
+            imagen.src = imagenes[e.tipo_mascota];
+            imagen.className = "imagen";
+            divs.appendChild(imagen);
+
+            let nombre_mascota = document.createElement("p");
+            nombre_mascota.textContent = "Nombre: " + e.nombre;
+            nombre_mascota.id = "nombre_mascotap";
+
+            let propietario = document.createElement("p");
+            propietario.textContent = "Propietario: " + e.propietario;
+            propietario.id = "propietariop";
+
+            let telefono = document.createElement("p");
+            telefono.textContent = "Teléfono: " + e.telefono;
+            telefono.id = "telefonop";
+
+            let tipo_mascota = document.createElement("p");
+            tipo_mascota.textContent = "Tipo de mascota: " + e.tipo_mascota;
+            tipo_mascota.id = "tipo_mascotap";
+
+            let fecha = document.createElement("p");
+            fecha.textContent = "Fecha: " + e.fecha;
+            fecha.id = "fechap";
+
+            let hora = document.createElement("p");
+            hora.textContent = "Hora: " + e.hora;
+            hora.id = "horap";
+
+            let sintomas = document.createElement("p");
+            sintomas.textContent = "Síntomas: " + e.sintomas;
+            sintomas.id = "sintomas";
+
+            let estadoSelect = document.createElement("select");
+            estadoSelect.className = "estado";
+            estadoSelect.id = "estado_" + i;
+            estadoSelect.innerHTML = `
+                    <option value="abierta" ${e.estado === 'abierta' ? 'selected' : ''}>Abierta</option>
+                    <option value="terminada" ${e.estado === 'terminada' ? 'selected' : ''}>Terminada</option>
+                    <option value="anulada" ${e.estado === 'anulada' ? 'selected' : ''}>Anulada</option>
+                `;
+            estadoSelect.addEventListener('change', function () {
+                informacion[i].estado = this.value;
+            });
+
+            let editarBtn = document.createElement("button");
+            editarBtn.textContent = "editar";
+            editarBtn.className = "btn btn-info";
+            editarBtn.addEventListener("click", () => {
+                ide = i
+                document.getElementById("nombre_mascota").value = e.nombre;
+                document.getElementById("propietario").value = e.propietario;
+                document.getElementById("telefono").value = e.telefono;
+                document.getElementById("tipo_mascota").value = e.tipo_mascota;
+                document.getElementById("fecha").value = e.fecha;
+                document.getElementById("hora").value = e.hora;
+                document.getElementById("sintomas").value = e.sintomas;
+                bd = true
+                new bootstrap.Modal(document.getElementById('exampleModal')).show()
+            });
+
+            let eliminarBtn = document.createElement("button");
+            eliminarBtn.textContent = "eliminar";
+            eliminarBtn.className = "btn btn-danger";
+            eliminarBtn.addEventListener("click", () => eliminarCita(i));
+
+            divs.append(nombre_mascota, propietario, telefono, tipo_mascota, fecha, hora, sintomas, estadoSelect, editarBtn, eliminarBtn);
+            document.getElementById("B").appendChild(divs);
+        });
+    }
+</script>
+<style>
+    * {
+        margin: 0%;
+    }
+
+    #nombre_mascotap,
+    #propietariop,
+    #telefonop,
+    #sexo_mascotap,
+    #tipo_mascotap,
+    #fechap,
+    #horap,
+    #sintomas {
+        font-size: large;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-left: 2%;
+        color: white;
+    }
+
+    body {
+        display: flex;
+        height: 100vh;
+        flex-direction: column;
+        background-color: #40916c;
+        border: 1px solid #40916c;
+    }
+
+    .eliminar {
+        background-color: #dd2d4a;
+        color: white !important;
+        border: 2px solid black;
+        border-radius: 10px;
+    }
+
+
+    .editar {
+        background-color: #358f80;
+        color: white !important;
+        border: 2px solid #b7e4c7;
+        border-radius: 10px;
+    }
+
+    .estado {
+        border-radius: 7px;
+        width: 300px;
+        background-color: #b2d0ff;
+        border: 2px solid #081c15;
+    }
+
+    .jh {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size: 25px !important;
+    }
+
+    .modal-content {
+        background-image: url(https://img.freepik.com/foto-gratis/retrato-pastor-aleman-perro-gradiente-iluminacion_23-2149277235.jpg?ga=GA1.1.1743634919.1719586381&semt=ais_user);
+        background-size: cover;
+        border: 2px solid #b7e4c7;
+        color: #b2d0ff;
+        border: 2px solid #b2d0ff;
+    }
+
+    #nombre_mascota,
+    #propietario,
+    #telefono,
+    #tipo_mascota,
+    #fecha,
+    #hora,
+    .sintomas {
+        border-radius: 7px;
+        width: 300px;
+        background-color: #b2d0ff;
+        border: 2px solid #081c15;
+    }
+
+    .texto00 {
+        font-size: x-large;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 0% !important;
+    }
+
+    .imagen {
+        align-self: center;
+        width: 100%;
+        height: 150px;
+        border-radius: 10px;
+
+
+
+    }
+
+    .tarjeta {
+        display: flex;
+        flex-direction: column;
+        margin-left: 3%;
+        margin-top: 20px;
+        border: 2px solid #b2d0ff;
+        height: fit-content;
+        background-color: #358f80;
+        border: 2px solid #b7e4c7;
+        border-radius: 10px;
+        width: 300px !important;
+    }
+
+    .texto1 {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 7%;
+        margin-left: 2%;
+        color: white;
+    }
+
+    .texto2 {
+        margin-bottom: 0%;
+        margin-top: 3%;
+    }
+
+    .titulo {
+        display: flex;
+        width: 100%;
+        height: 100px;
+        align-items: center;
+        justify-content: center;
+        background-color: #081c15;
+        border: 2px solid #40916c;
+        border-bottom: 1px solid #40916c;
+        border-radius: 10px;
+        color: white;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    .contenedor1 {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+    }
+
+    .A {
+        display: flex;
+        flex-direction: column;
+        width: 20%;
+        background-image: url(https://img3.wallspic.com/previews/2/5/3/9/6/169352/169352-verde_alpino-manzana-ios-ios_15-rectangulo-x750.jpg);
+        background-size: cover;
+        border: 3px solid #40916c;
+        align-items: center;
+        border-radius: 15px;
+    }
+
+    .boton {
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 5%;
+        background-color: #358f80;
+        border: 2px solid #b7e4c7;
+        color: white !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .B {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 100%;
+        background-image: url(https://img2.wallspic.com/crops/2/6/5/9/4/149562/149562-perro_de_juguete-1366x768.jpg);
+        background-size: 100% 100%;
+        border-radius: 15px;
+        border: 3px solid #40916c;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .organizar {
+        font-size: medium;
+    }
+
+
+
+
+
+
+    /*-----------*/
+    .container {
+        color: white;
+        font-family: sans-serif;
+        margin-top: 10%;
+    }
+
+    .container::before,
+    .container::after {
+        content: "";
+        background-color: #fab5704c;
+        position: absolute;
+    }
+
+
+
+    .container .box {
+        padding: 3rem;
+        background-color: rgba(255, 255, 255, 0.074);
+        border: 1px solid rgba(255, 255, 255, 0.222);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        border-radius: 0.7rem;
+        transition: all ease 0.3s;
+    }
+
+    .container .box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container .box .title {
+        font-size: 2rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+    }
+
+    .container .box div strong {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .container .box div p {
+        margin: 0;
+        font-size: 0.9em;
+        font-weight: 300;
+        letter-spacing: 0.1em;
+    }
+
+    .container .box div span {
+        font-size: 0.7rem;
+        font-weight: 300;
+    }
+
+    .container .box div span:nth-child(3) {
+        font-weight: 500;
+        margin-right: 0.2rem;
+    }
+
+    .container .box:hover {
+        box-shadow: 0px 0px 20px 1px #ffbb763f;
+        border: 1px solid rgba(255, 255, 255, 0.454);
+    }
+
+    /*radio buton*/
+
+    .container form {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .container label {
+        display: flex;
+        cursor: pointer;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 0.375em;
+    }
+
+    .container label input {
+        position: absolute;
+        left: -9999px;
+    }
+
+    .container label input:checked+span {
+        background-color: #2f3e46;
+        color: white;
+    }
+
+    .container label input:checked+span:before {
+        box-shadow: inset 0 0 0 0.4375em #00005c;
+    }
+
+    .container label span {
+        display: flex;
+        align-items: center;
+        padding: 0.375em 0.75em 0.375em 0.375em;
+        border-radius: 99em;
+        transition: 0.25s ease;
+        color: floralwhite;
+    }
+
+    .container label span:hover {
+        background-color: #d6d6e5;
+    }
+
+    .container label span:before {
+        display: flex;
+        flex-shrink: 0;
+        content: "";
+        background-color: #d8f3dc;
+        width: 2.5em;
+        height: 2.5em;
+        border-radius: 50%;
+        margin-right: 0.375em;
+        transition: 0.25s ease;
+        border: 2px solid #036666;
+    }
+
+    /* responsive*/
+
+    @media (max-width: 1320px) {
+        .container .box {
+            padding: 0%;
+        }
+    }
+
+    @media(max-width:1036px) {
+        .jh {
+            font-size: 20px !important;
+        }
+
+        .container label span:before {
+            width: 2.0em;
+            height: 2.0em;
+        }
+
+    }
+
+    @media(max-width:892px){
+
+
+        .tarjeta{
+            margin-left: 0%;
+        }
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+</html>
